@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as Location from "expo-location";
+import MapView from "react-native-maps";
+import { Marker } from "react-native-maps";
 import { useEffect, useState } from "react";
-import { OPEN_WEATHER_API_KEY } from "@env";
 
 interface locaType {
   lat: number;
@@ -26,16 +27,23 @@ interface addressType {
 export default function App() {
   const [location, setLocation] = useState<locaType>();
   const [cityData, setCityData] = useState<string>("");
-  const [weatherData, setWeatherData] = useState<any>();
-  const locationObject = {
-    latitude: location?.lat || 0,
-    longitude: location?.lon || 0,
-  };
+  const [temp, setTemp] = useState<number>(0);
+  const [desc, setDesc] = useState<string>("");
+  const [level, setLevel] = useState<number>(0);
+  const [coord, setCoord] = useState<{
+    lat: number;
+    lon: number;
+  }>({ lat: 0, lon: 0 });
 
   useEffect(() => {
     getLocationCoords();
     weatherResp();
   }, []);
+
+  const locationObject = {
+    latitude: location?.lat || 0,
+    longitude: location?.lon || 0,
+  };
 
   const getLocationCoords = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -58,10 +66,13 @@ export default function App() {
   const weatherResp = async () => {
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast/daily?lat=${locationObject.latitude}&lon=${locationObject.longitude}&cnt=5&appid=${OPEN_WEATHER_API_KEY}`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${locationObject.latitude}&lon=${locationObject.longitude}&cnt=5&units=metric&appid=faf4bdb03e4e7c4f63054d20e84d697a`
       );
       const data = await response.json();
-      console.log(data);
+      setLevel(data.list[0].main.grnd_level);
+      setCoord(data.city.coord);
+      setDesc(data.list[0].weather[0].description);
+      setTemp(data.list[0].main.feels_like.toFixed(0));
     } catch (error) {}
   };
 
@@ -69,12 +80,34 @@ export default function App() {
     <View style={styles.container}>
       <View style={styles.cityWrap}>
         <Text style={styles.city}>{cityData}</Text>
+        <Text style={styles.coords}>
+          {coord.lat}* {coord.lon}
+        </Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.temp}>10</Text>
-        <Text style={styles.weather}>Clear</Text>
+        <View style={styles.subWrap}>
+          <Text style={styles.subtitles}>Realtime feel Temp</Text>
+        </View>
+        <Text style={styles.temp}>{temp}°</Text>
+        <Text style={styles.weather}>{desc}</Text>
+        <Text style={styles.groundLevel}>{level}m</Text>
+        <MapView
+          style={styles.map}
+          region={{
+            latitude: coord.lat,
+            longitude: coord.lon,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          mapType="mutedStandard"
+        >
+          <Marker
+            coordinate={{ latitude: coord.lat, longitude: coord.lon }}
+            image={{ uri: "custom_pin" }}
+          />
+        </MapView>
       </View>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </View>
   );
 }
@@ -82,29 +115,59 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1357",
+    backgroundColor: "#efefef",
   },
   cityWrap: {
-    flex: 3,
+    flex: 1.2,
     alignItems: "center",
   },
   city: {
-    padding: 30,
+    paddingTop: 50,
     fontSize: 34,
     fontWeight: "700",
+    color: "#202020",
   },
   body: {
     flex: 6,
     alignItems: "center",
-    paddingTop: 30,
+  },
+  coords: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#202020",
   },
   temp: {
-    fontSize: 150,
+    fontSize: 130,
     fontWeight: "700",
+    color: "#202020",
   },
   weather: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: "500",
     marginTop: -20,
+    color: "#202020",
+  },
+  groundLevel: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#202020",
+  },
+  subWrap: {
+    backgroundColor: "#202020",
+    borderRadius: 40,
+    marginBottom: -14,
+  },
+  subtitles: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#eeeeee",
+    padding: 8,
+    paddingHorizontal: 16,
+  },
+  map: {
+    borderRadius: 40,
+    marginTop: 34,
+    width: "80%",
+    height: "60%",
   },
 });
