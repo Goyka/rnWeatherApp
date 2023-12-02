@@ -1,4 +1,6 @@
-### 🌐 myWeb
+### 🌐 React Native Weather App
+
+<img width="1325" alt="스크린샷 2023-12-02 16 33 53" src="https://github.com/Goyka/rnWeatherApp/assets/112574979/15a89df1-9e45-461f-9706-48903ac8a2af">
 
 <p>
 리액트 네이티브와 엑스포 SDK를 학습하기 위한 사이드 프로젝트.
@@ -7,7 +9,8 @@
 ### ⚙️ Stack
 
 <p>
-<img src="https://img.shields.io/badge/React Native-ffffff?style=flat&logo=React&logoColor=black"/>  
+<img src="https://img.shields.io/badge/React Native-61DAFB?style=flat&logo=React&logoColor=black"/>
+<img src="https://img.shields.io/badge/Expo-ffffff?style=flat&logo=expo&logoColor=000020"/>
 </p>
 
 ### 🧩 Feature
