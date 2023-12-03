@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
-import { Marker } from "react-native-maps";
 import { useEffect, useState } from "react";
 
 interface locaType {
@@ -100,14 +99,9 @@ export default function App() {
             longitudeDelta: 0.0421,
           }}
           mapType="mutedStandard"
-        >
-          <Marker
-            coordinate={{ latitude: coord.lat, longitude: coord.lon }}
-            image={{ uri: "custom_pin" }}
-          />
-        </MapView>
+        />
       </View>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </View>
   );
 }
