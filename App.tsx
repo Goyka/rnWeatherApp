@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View, Button } from "react-native";
+import MapView from "react-native-maps";
 import { StatusBar } from "expo-status-bar";
 import * as Location from "expo-location";
-import MapView from "react-native-maps";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { OPEN_WEATHER_API } from "./Key";
 
 interface locaType {
   lat: number;
@@ -29,14 +31,22 @@ export default function App() {
   const [temp, setTemp] = useState<number>(0);
   const [desc, setDesc] = useState<string>("");
   const [level, setLevel] = useState<number>(0);
+  const [, setRefr] = useState(0);
   const [coord, setCoord] = useState<{
     lat: number;
     lon: number;
   }>({ lat: 0, lon: 0 });
 
+  const API_KEY = OPEN_WEATHER_API;
+
   useEffect(() => {
-    getLocationCoords();
-    weatherResp();
+    const fetchData = async () => {
+      await getLocationCoords();
+      if (location) {
+        weatherResp();
+      }
+    };
+    fetchData();
   }, []);
 
   const locationObject = {
@@ -49,7 +59,7 @@ export default function App() {
     if (status !== "granted") {
       return;
     } else {
-      const loca = await Location.getCurrentPositionAsync({});
+      const loca = await Location.getCurrentPositionAsync();
       const lat = loca.coords.latitude;
       const lon = loca.coords.longitude;
       setLocation({ lat, lon });
@@ -64,21 +74,29 @@ export default function App() {
 
   const weatherResp = async () => {
     try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${locationObject.latitude}&lon=${locationObject.longitude}&cnt=5&units=metric&appid=faf4bdb03e4e7c4f63054d20e84d697a`
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${locationObject.latitude}&lon=${locationObject.longitude}&cnt=1&units=metric&appid=${API_KEY}`
       );
-      const data = await response.json();
-      setLevel(data.list[0].main.grnd_level);
-      setCoord(data.city.coord);
-      setDesc(data.list[0].weather[0].description);
-      setTemp(data.list[0].main.feels_like.toFixed(0));
-    } catch (error) {}
+      setLevel(response.data.list[0].main.grnd_level);
+      setCoord(response.data.city.coord);
+      setDesc(response.data.list[0].weather[0].description);
+      setTemp(response.data.list[0].main.feels_like.toFixed(0));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const refreshWindow = () => {
+    setRefr((prev) => prev + 1);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.cityWrap}>
-        <Text style={styles.city}>{cityData}</Text>
+        <View style={styles.refr}>
+          <Text style={styles.city}>{cityData}</Text>
+          <Button onPress={() => refreshWindow} title="🔄" color="#282828" />
+        </View>
         <Text style={styles.coords}>
           {coord.lat}* {coord.lon}
         </Text>
@@ -92,6 +110,12 @@ export default function App() {
         <Text style={styles.groundLevel}>{level}m</Text>
         <MapView
           style={styles.map}
+          initialRegion={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
           region={{
             latitude: coord.lat,
             longitude: coord.lon,
@@ -115,12 +139,17 @@ const styles = StyleSheet.create({
     flex: 1.2,
     alignItems: "center",
   },
-  city: {
+  refr: {
     paddingTop: 50,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  city: {
     fontSize: 34,
     fontWeight: "700",
     color: "#202020",
   },
+
   body: {
     flex: 6,
     alignItems: "center",
