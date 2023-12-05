@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
 import { useEffect, useState } from "react";
+import { OPEN_WEATHER_API } from "./Key";
 
 interface locaType {
   lat: number;
@@ -65,7 +66,7 @@ export default function App() {
   const weatherResp = async () => {
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${locationObject.latitude}&lon=${locationObject.longitude}&cnt=5&units=metric&appid=faf4bdb03e4e7c4f63054d20e84d697a`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${locationObject.latitude}&lon=${locationObject.longitude}&cnt=5&units=metric&appid=${OPEN_WEATHER_API}`
       );
       const data = await response.json();
       setLevel(data.list[0].main.grnd_level);
