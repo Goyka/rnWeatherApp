@@ -1,24 +1,40 @@
 {
   "expo": {
     "name": "Suomi",
-    "slug": "Suomi",
+    "slug": "suomi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "<YOUR-RESERVED-CLIENT-ID>"
+        },
+        "scheme": {
+          "suomi": {}
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleSignIn": {
+          "apiKey": "<YOUR-API-KEY-FOR-ANDROID>"
+        },
+        "scheme": {
+          "suomi": {}
+        }
       }
     },
     "web": {
@@ -30,7 +46,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ]
+      ],
+      "expo-router"
     ]
   }
 }

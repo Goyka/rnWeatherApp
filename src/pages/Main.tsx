@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import MapView from "react-native-maps";
 import { StatusBar } from "expo-status-bar";
 import * as Location from "expo-location";
@@ -102,7 +102,7 @@ function Main() {
       </View>
       <View style={styles.body}>
         <View style={styles.subWrap}>
-          <Text style={styles.subtitles}>Realtime feel Temp</Text>
+          <Text style={styles.subtitles}>Temperature feels like</Text>
         </View>
         <Text style={styles.temp}>{temp}°</Text>
         <Text style={styles.weather}>{desc}</Text>
@@ -124,7 +124,7 @@ function Main() {
           mapType="mutedStandard"
         />
       </View>
-      <StatusBar style="dark" />
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -132,15 +132,14 @@ export default Main;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#efefef",
+    flex: 1.0,
+    backgroundColor: "#ffffff",
   },
   cityWrap: {
     flex: 1.2,
     alignItems: "center",
   },
   refr: {
-    paddingTop: 50,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -149,8 +148,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#202020",
   },
-
   body: {
+    marginTop: -30,
     flex: 6,
     alignItems: "center",
   },
