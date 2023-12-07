@@ -1,10 +1,10 @@
 import { View } from "react-native";
-import Main from "./src/pages/Main";
+import App from "../App";
 
-export default function App() {
+export default function Page() {
   return (
     <View style={{ flex: 1 }}>
-      <Main />
+      <App />
     </View>
   );
 }
