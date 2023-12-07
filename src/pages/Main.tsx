@@ -4,7 +4,7 @@ import MapView from "react-native-maps";
 import { StatusBar } from "expo-status-bar";
 import * as Location from "expo-location";
 import axios from "axios";
-import { OPEN_WEATHER_API } from "../Key";
+import { OPEN_WEATHER_API } from "../../Key";
 
 interface locaType {
   lat: number;
